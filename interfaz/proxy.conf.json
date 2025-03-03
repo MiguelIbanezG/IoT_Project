@@ -1,0 +1,9 @@
+{
+    "/api": {
+      "target": "https://danubio.ii.uam.es",
+      "secure": false,
+      "changeOrigin": true,
+      "logLevel": "debug"
+    }
+  }
+  

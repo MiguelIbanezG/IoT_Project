@@ -1,10 +1,24 @@
 <div class="container">
-    <h1>Home Assistant Control</h1>
-  
-    <h2>Lámpara Izquierda</h2>
-    <p>Estado: {{ lightState?.state }}</p>
-    <button (click)="turnOffLight()">Apagar</button>
-  
-    <h2>Temperaturas</h2>
+  <h1>💡 Home Assistant Control</h1>
+
+  <div class="light-card">
+    <h2>🟡 Lámpara Izquierda</h2>
+    <p>Estado: <strong>{{ leftLampState?.state || 'Desconocido' }}</strong></p>
+    <button class="on" (click)="turnOnLeftLamp()">Encender 🔆</button>
+    <button class="off" (click)="turnOffLeftLamp()">Apagar 💡</button>
   </div>
-  
+
+  <div class="light-card">
+    <h2>🔵 Lámpara Derecha</h2>
+    <p>Estado: <strong>{{ rightLampState?.state || 'Desconocido' }}</strong></p>
+    <button class="on" (click)="turnOnRightLamp()">Encender 🔷</button>
+    <button class="off" (click)="turnOffRightLamp()">Apagar 💡</button>
+  </div>
+
+  <div class="light-card">
+    <h2>📖 Luz de Lectura</h2>
+    <p>Estado: <strong>{{ readingLampState?.state || 'Desconocido' }}</strong></p>
+    <button class="on" (click)="turnOnReadingLamp()">Encender 📚</button>
+    <button class="off" (click)="turnOffReadingLamp()">Apagar 💡</button>
+  </div>
+</div>

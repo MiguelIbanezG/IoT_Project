@@ -1,0 +1,78 @@
+// 🎨 Paleta de colores
+$primary-color: #007bff;
+$secondary-color: #17a2b8;
+$background-color: #f4f4f4;
+$button-color: #28a745;
+$button-off-color: #dc3545;
+$text-color: #333;
+$shadow-color: rgba(0, 0, 0, 0.1);
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: $background-color;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px $shadow-color;
+  text-align: center;
+}
+
+h1 {
+  color: $primary-color;
+  margin-bottom: 20px;
+}
+
+h2 {
+  color: $secondary-color;
+  margin-top: 20px;
+  border-bottom: 2px solid $secondary-color;
+  padding-bottom: 10px;
+}
+
+p {
+  font-size: 18px;
+  font-weight: bold;
+  color: $text-color;
+}
+
+button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 2px 2px 8px $shadow-color;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+button.on {
+  background: $button-color;
+  color: white;
+
+  &:hover {
+    background: darken($button-color, 10%);
+  }
+}
+
+button.off {
+  background: $button-off-color;
+  color: white;
+
+  &:hover {
+    background: darken($button-off-color, 10%);
+  }
+}
