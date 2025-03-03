@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  apiBaseUrl: 'https://danubio.ii.uam.es/api', // URL de Home Assistant
 };
