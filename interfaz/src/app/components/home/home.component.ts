@@ -10,11 +10,13 @@ export class HomeComponent implements OnInit {
   leftLampState: any;
   rightLampState: any;
   readingLampState: any;
+  cameraStreamUrl: string = '';
 
   constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
     this.loadAllLampStates();
+    this.cameraStreamUrl = this.apiService.getCameraStream();
   }
 
   // ✅ Cargar estados de todas las lámparas
@@ -31,7 +33,6 @@ export class HomeComponent implements OnInit {
       this.readingLampState = response;
     });
   }
-
   // ✅ Control de la lámpara izquierda
   turnOnLeftLamp(): void {
     this.apiService.turnOnLeftLamp().subscribe(response => {
@@ -76,4 +77,5 @@ export class HomeComponent implements OnInit {
       this.loadAllLampStates();
     });
   }
+  
 }

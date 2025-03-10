@@ -65,4 +65,10 @@ export class ApiService {
   getReadingLampState(): Observable<any> {
     return this.get('states/light.lampara_de_lectura');
   }
+
+    // ✅ Obtener el stream de la cámara
+    getCameraStream(): string {
+      return `${this.baseUrl}/camera_proxy_stream/camera.amicam?token=1f482d9a4be0fce6a31281af614f68f0e63779b35a2f60e8a2124346f94ab96a`;
+    }
+  
 }

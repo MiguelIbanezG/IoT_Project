@@ -1,24 +1,35 @@
 <div class="container">
   <h1>💡 Home Assistant Control</h1>
 
-  <div class="light-card">
-    <h2>🟡 Lámpara Izquierda</h2>
-    <p>Estado: <strong>{{ leftLampState?.state || 'Desconocido' }}</strong></p>
-    <button class="on" (click)="turnOnLeftLamp()">Encender 🔆</button>
-    <button class="off" (click)="turnOffLeftLamp()">Apagar 💡</button>
-  </div>
+  <div class="content-wrapper">
+    <!-- 📷 Stream de la Cámara -->
+    <div class="camera-container">
+      <h2>📷 Vista en Vivo</h2>
+      <img [src]="cameraStreamUrl" alt="Stream de la cámara" class="camera-stream">
+    </div>
 
-  <div class="light-card">
-    <h2>🔵 Lámpara Derecha</h2>
-    <p>Estado: <strong>{{ rightLampState?.state || 'Desconocido' }}</strong></p>
-    <button class="on" (click)="turnOnRightLamp()">Encender 🔷</button>
-    <button class="off" (click)="turnOffRightLamp()">Apagar 💡</button>
-  </div>
+    <!-- 🔆 Controles de las luces -->
+    <div class="lights-container">
+      <div class="light-card">
+        <h2>🟡 Lámpara Izquierda</h2>
+        <p>Estado: <strong>{{ leftLampState?.state || 'Desconocido' }}</strong></p>
+        <button class="on" (click)="turnOnLeftLamp()">Encender 🔆</button>
+        <button class="off" (click)="turnOffLeftLamp()">Apagar 💡</button>
+      </div>
 
-  <div class="light-card">
-    <h2>📖 Luz de Lectura</h2>
-    <p>Estado: <strong>{{ readingLampState?.state || 'Desconocido' }}</strong></p>
-    <button class="on" (click)="turnOnReadingLamp()">Encender 📚</button>
-    <button class="off" (click)="turnOffReadingLamp()">Apagar 💡</button>
+      <div class="light-card">
+        <h2>🔵 Lámpara Derecha</h2>
+        <p>Estado: <strong>{{ rightLampState?.state || 'Desconocido' }}</strong></p>
+        <button class="on" (click)="turnOnRightLamp()">Encender 🔷</button>
+        <button class="off" (click)="turnOffRightLamp()">Apagar 💡</button>
+      </div>
+
+      <div class="light-card">
+        <h2>📖 Luz de Lectura</h2>
+        <p>Estado: <strong>{{ readingLampState?.state || 'Desconocido' }}</strong></p>
+        <button class="on" (click)="turnOnReadingLamp()">Encender 📚</button>
+        <button class="off" (click)="turnOffReadingLamp()">Apagar 💡</button>
+      </div>
+    </div>
   </div>
 </div>
