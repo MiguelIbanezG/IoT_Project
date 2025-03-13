@@ -4,6 +4,8 @@ $secondary-color: #17a2b8;
 $background-color: #f4f4f4;
 $button-color: #28a745;
 $button-off-color: #dc3545;
+$party-mode-color: #ff6600;
+$party-stop-color: #ff3300;
 $text-color: #333;
 $shadow-color: rgba(0, 0, 0, 0.1);
 
@@ -17,22 +19,19 @@ body {
 .container {
   max-width: 100%;
   max-height: 100%;
-  margin: 50px auto;
-  padding: 20px;
   background: #fff;
   border-radius: 10px;
-  box-shadow: 0px 4px 10px $shadow-color;
   text-align: center;
 }
 
 h1 {
   color: $primary-color;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 h2 {
   color: $secondary-color;
-  margin-top: 20px;
+  margin-top: 10px;
   border-bottom: 2px solid $secondary-color;
   padding-bottom: 10px;
 }
@@ -41,6 +40,7 @@ p {
   font-size: 18px;
   font-weight: bold;
   color: $text-color;
+  margin: 3px;
 }
 
 // ✅ Contenedor principal (Divide en dos columnas)
@@ -48,7 +48,7 @@ p {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 20px;
+  gap: 5px;
 }
 
 // 📷 Cámara
@@ -69,12 +69,12 @@ p {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 5px;
 }
 
 .light-card {
   background: #fff;
-  padding: 20px;
+  padding: 5px;
   border-radius: 10px;
   box-shadow: 2px 2px 8px $shadow-color;
   text-align: center;
@@ -82,10 +82,10 @@ p {
 
 button {
   display: inline-block;
-  padding: 10px 20px;
-  font-size: 16px;
+  padding: 8px 16px;
+  font-size: 14px;
   font-weight: bold;
-  margin: 10px;
+  margin: 5px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -114,3 +114,24 @@ button.off {
     background: darken($button-off-color, 10%);
   }
 }
+
+button.party {
+  background: $party-mode-color;
+  color: white;
+
+  &:hover {
+    background: darken($party-mode-color, 10%);
+  }
+}
+
+button.stop-party {
+  background: $party-stop-color;
+  color: white;
+
+  &:hover {
+    background: darken($party-stop-color, 10%);
+  }
+}
+
+.alert { background: #ff0000; color: white; }
+.stop-alert { background: #660000; color: white; }

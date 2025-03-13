@@ -30,6 +30,25 @@
         <button class="on" (click)="turnOnReadingLamp()">Encender 📚</button>
         <button class="off" (click)="turnOffReadingLamp()">Apagar 💡</button>
       </div>
+
+      <div class="light-card party-mode">
+        <h2>🎉 Modo Fiesta</h2>
+        <button class="party" (click)="startPartyMode()" *ngIf="!partyModeActive">Activar 🎊</button>
+        <button class="stop-party" (click)="stopPartyMode()" *ngIf="partyModeActive">Desactivar 🛑</button>
+      </div>
+
+      <div class="light-card alert-mode">
+        <h2>🚨 Modo Alerta</h2>
+        <button class="alert" (click)="startAlertMode()" *ngIf="!alertModeActive">Activar ⚠️</button>
+        <button class="stop-alert" (click)="stopAlertMode()" *ngIf="alertModeActive">Desactivar 🛑</button>
+      </div>
+
+      <div class="light-card alert-mode">
+        <h2>🚨 Modo Luz Nocturna</h2>
+        <button class="alert" (click)="startWarmMode()" *ngIf="!alertModeActive">Activar ⚠️</button>
+        <button class="stop-alert" (click)="stopPartyMode()" *ngIf="alertModeActive">Desactivar 🛑</button>
+      </div>
+
     </div>
   </div>
 </div>
