@@ -128,9 +128,7 @@ export class HomeComponent implements OnInit {
         this.apiService.setLampTemperature('light.lampara_de_lectura', 1800).subscribe();
         this.apiService.setLampColor('light.lampara_derecha', [255, 0, 0]).subscribe();
       } else {
-        this.apiService.turnOffLeftLamp().subscribe();
-        this.apiService.turnOffRightLamp().subscribe();
-        this.apiService.turnOffReadingLamp().subscribe();
+        this.turnOffAllLamps();
       }
       isOn = !isOn;
     }, 500);
@@ -142,21 +140,25 @@ export class HomeComponent implements OnInit {
       this.alertModeInterval = null;
       this.alertModeActive = false;
     }
-    this.turnOffLeftLamp();
-    this.turnOffRightLamp();
-    this.turnOffReadingLamp();
+    this.turnOffAllLamps();
   }
 
   startWarmMode(): void {
     this.apiService.setLampTemperature('light.lampara_izquierda', 2200).subscribe();
     this.apiService.setLampColor('light.lampara_derecha', [255, 140, 0]).subscribe();
+    this.apiService.setLampTemperature('light.lampara_de_lectura', 2200).subscribe();
     this.warmModeActive = true;
   }
 
   stopWarmMode(): void {
-    this.apiService.turnOffLeftLamp().subscribe();
-    this.apiService.turnOffRightLamp().subscribe();
+    this.turnOffAllLamps();
     this.warmModeActive = false;
+  }
+
+  turnOffAllLamps(): void {
+    this.turnOffLeftLamp();
+    this.turnOffRightLamp();
+    this.turnOffReadingLamp();
   }
 
 }

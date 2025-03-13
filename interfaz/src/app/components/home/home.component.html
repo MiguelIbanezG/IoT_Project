@@ -43,11 +43,11 @@
         <button class="stop-alert" (click)="stopAlertMode()" *ngIf="alertModeActive">Desactivar 🛑</button>
       </div>
 
-      <div class="light-card alert-mode">
-        <h2>🚨 Modo Luz Nocturna</h2>
-        <button class="alert" (click)="startWarmMode()" *ngIf="!alertModeActive">Activar ⚠️</button>
-        <button class="stop-alert" (click)="stopPartyMode()" *ngIf="alertModeActive">Desactivar 🛑</button>
-      </div>
+      <div class="light-card warm-mode">
+        <h2>🔥 Modo Cálido</h2>
+        <button class="warm" (click)="startWarmMode()" *ngIf="!warmModeActive">Activar 🌅</button>
+        <button class="stop-warm" (click)="stopWarmMode()" *ngIf="warmModeActive">Desactivar 🛑</button>
+      </div>      
 
     </div>
   </div>

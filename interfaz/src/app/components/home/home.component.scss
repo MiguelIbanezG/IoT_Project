@@ -133,5 +133,39 @@ button.stop-party {
   }
 }
 
-.alert { background: #ff0000; color: white; }
-.stop-alert { background: #660000; color: white; }
+button.alert {
+  background: #ff0000;
+  color: white;
+
+  &:hover {
+    background: darken(#ff0000, 10%);
+  }
+}
+
+button.stop-alert {
+  background: #660000;
+  color: white;
+
+  &:hover {
+    background: darken(#660000, 10%);
+  }
+}
+
+button.warm {
+  background: #ff8c00;
+  color: white;
+
+  &:hover {
+    background: darken(#ff8c00, 10%);
+  }
+}
+
+button.stop-warm {
+  background: #804000;
+  color: white;
+
+  &:hover {
+    background: darken(#804000, 10%);
+  }
+}
+
