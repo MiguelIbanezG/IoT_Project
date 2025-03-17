@@ -1,33 +1,27 @@
 // 🎨 Paleta de colores
-$primary-color: #007bff;
-$secondary-color: #17a2b8;
-$background-color: #f4f4f4;
+$primary-color: #0e95aa;
+$secondary-color: #0e95aa;
+
+$container-color: #8bc3cc;
+$card-color: #f8f9fa;
+
 $button-color: #28a745;
 $button-off-color: #dc3545;
-$party-mode-color: #ff6600;
-$party-stop-color: #ff3300;
-$text-color: #333;
+
+$party-mode-color: #6d039e;
+$party-stop-color: #340044;
+
+$alert-color: #ff0000;
+$alert-stop-color: #a70000;
+
+$warm-color: #ff9100;
+$warm-stop-color: #ff5e00c0;
+
+$boton-foto: #0e95aa;
+
 $shadow-color: rgba(0, 0, 0, 0.1);
 
-body {
-  font-family: 'Arial', sans-serif;
-  background-color: $background-color;
-  margin: 0;
-  padding: 0;
-}
 
-.container {
-  max-width: 100%;
-  max-height: 100%;
-  background: #fff;
-  border-radius: 10px;
-  text-align: center;
-}
-
-h1 {
-  color: $primary-color;
-  margin-bottom: 10px;
-}
 
 h2 {
   color: $secondary-color;
@@ -35,54 +29,126 @@ h2 {
   border-bottom: 2px solid $secondary-color;
   padding-bottom: 10px;
 }
+.camera-btn capture{
 
-p {
-  font-size: 18px;
-  font-weight: bold;
-  color: $text-color;
-  margin: 3px;
 }
-
-// ✅ Contenedor principal (Divide en dos columnas)
 .content-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 5px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.controls-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+/* 📍 Modos Especiales (Izquierda) */
+.special-modes-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background-color: $container-color;
+}
+
+/* 💡 Controles de Luces (Derecha) */
+.lights-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background-color: $container-color;
 }
 
 // 📷 Cámara
 .camera-container {
   flex: 1;
   text-align: center;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 8px $shadow-color;
+  margin-top: 20px;
+  margin-left: 40px;
+  margin-right: 40px;
+  margin-bottom: 0px;
 }
 
-.camera-stream {
-  width: 50%;
-  max-width: 200%;
+.video-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.camera-btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 2px 2px 8px $shadow-color;
+  background-color: $boton-foto;
+  color: white;
+}
+
+.open {
+  background: $primary-color;
+  color: white;
+  &:hover {
+    background: darken($primary-color, 10%);
+  }
+}
+
+.capture {
+  background: $button-color;
+  color: white;
+  &:hover {
+    background: darken($button-color, 10%);
+  }
+}
+
+.stream-wrapper {
+  margin-top: 15px;
+}
+
+.captured-photo {
+  width: 100%;
+  max-width: 300px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-// 🔆 Controles de luces
-.lights-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
 
-.light-card {
+.light-card-left {
   background: #fff;
-  padding: 5px;
+  padding: 15px;
   border-radius: 10px;
   box-shadow: 2px 2px 8px $shadow-color;
   text-align: center;
+  margin-left: 40px;
+  background-color: $card-color;
+}
+
+.light-card-right {
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 8px $shadow-color;
+  text-align: center;
+  margin-right: 40px;
+  background-color: $card-color;
 }
 
 button {
-  display: inline-block;
-  padding: 8px 16px;
+  padding: 10px 20px;
   font-size: 14px;
   font-weight: bold;
   margin: 5px;
@@ -134,38 +200,37 @@ button.stop-party {
 }
 
 button.alert {
-  background: #ff0000;
+  background: $alert-color;
   color: white;
 
   &:hover {
-    background: darken(#ff0000, 10%);
+    background: darken($alert-color, 10%);
   }
 }
 
 button.stop-alert {
-  background: #660000;
+  background:  $alert-stop-color;
   color: white;
 
   &:hover {
-    background: darken(#660000, 10%);
+    background: darken($alert-stop-color, 10%);
   }
 }
 
 button.warm {
-  background: #ff8c00;
+  background: $warm-color;
   color: white;
 
   &:hover {
-    background: darken(#ff8c00, 10%);
+    background: darken($warm-color, 10%);
   }
 }
 
 button.stop-warm {
-  background: #804000;
+  background: $warm-stop-color;
   color: white;
 
   &:hover {
-    background: darken(#804000, 10%);
+    background: darken($warm-stop-color, 10%);
   }
 }
-

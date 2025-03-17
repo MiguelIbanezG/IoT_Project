@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api.service';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-home',
@@ -9,20 +10,40 @@ import { ApiService } from '../../services/api.service';
 export class HomeComponent implements OnInit {
   leftLampState: any;
   rightLampState: any;
+  photoUrl: SafeUrl | null = null;
   readingLampState: any;
-  cameraStreamUrl: string = '';
   private partyModeInterval: any = null;
   private alertModeInterval: any = null;
   partyModeActive: boolean = false;
   alertModeActive: boolean = false;
   warmModeActive: boolean = false;
+  cameraStreamUrl: string = "http://master:master@150.244.57.136/axis-cgi/mjpg/video.cgi?resolution=640x480";
+  
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
     this.loadAllLampStates();
-    this.cameraStreamUrl = this.apiService.getCameraStream();
   }
+
+  openCamera(): void {
+    const cameraUrl = "http://master:master@150.244.57.136/axis-cgi/mjpg/video.cgi?resolution=640x480";
+    window.open(cameraUrl, "_blank");
+  }
+
+  captureImage(): void {
+    this.apiService.getImage().subscribe(blob => {
+      const objectURL = URL.createObjectURL(blob);
+      this.photoUrl = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+    }, error => {
+      console.error("Error al capturar la imagen:", error);
+    });
+  }
+  
+
+  // loadCameraStream(): void {
+  //   this.cameraStreamUrl = "http://master:master@150.244.57.136/axis-cgi/mjpg/video.cgi?resolution=640x480";
+  // }
 
   // ✅ Cargar estados de todas las lámparas
   loadAllLampStates(): void {

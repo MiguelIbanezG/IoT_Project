@@ -66,10 +66,16 @@ export class ApiService {
     return this.get('states/light.lampara_de_lectura');
   }
 
-  getCameraStream(): string {
-    return `${this.baseUrl}/camera_proxy_stream/camera.amicam?token=1f482d9a4be0fce6a31281af614f68f0e63779b35a2f60e8a2124346f94ab96a`;
+  getImage(): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.token}`,
+      'Content-Type': 'image/jpeg'
+    });
+  
+    return this.http.get(`${this.baseUrl}/camera_proxy/camera.amicam`, { headers, responseType: 'blob' });
   }
-
+  
+  
   setLampColor(entityId: string, color: number[]): Observable<any> {
     return this.post('services/light/turn_on', { entity_id: entityId, brightness_pct: 100, rgb_color: color });
   }
@@ -78,4 +84,5 @@ export class ApiService {
     return this.post('services/light/turn_on', { entity_id: entityId, brightness_pct: 100, kelvin: kelvin });
   }
   
+
 }

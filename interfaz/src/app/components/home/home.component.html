@@ -1,54 +1,63 @@
-<div class="container">
-  <h1>💡 Home Assistant Control</h1>
-
-  <div class="content-wrapper">
-    <!-- 📷 Stream de la Cámara -->
-    <div class="camera-container">
-      <h2>📷 Vista en Vivo</h2>
-      <img [src]="cameraStreamUrl" alt="Stream de la cámara" class="camera-stream">
+<div class="content-wrapper">
+  <!-- 📷 Stream de la Cámara -->
+  <div class="camera-container">
+    <h2>📷 Vista en Vivo</h2>
+    <div class="video-wrapper">
+      <button class="camera-btn open" (click)="openCamera()">🔍 Abrir Cámara</button>
+      <button class="camera-btn" (click)="captureImage()">📸 Tomar Foto</button>
     </div>
+    <div class="stream-wrapper">
+      <a *ngIf="photoUrl" [href]="photoUrl" target="_blank">
+        <img [src]="photoUrl" alt="Foto tomada" class="captured-photo">
+      </a>
+    </div>
+  </div>
 
-    <!-- 🔆 Controles de las luce -->
-    <div class="lights-container">
-      <div class="light-card">
-        <h2>🟡 Lámpara Izquierda</h2>
-        <p>Estado: <strong>{{ leftLampState?.state || 'Desconocido' }}</strong></p>
-        <button class="on" (click)="turnOnLeftLamp()">Encender 🔆</button>
-        <button class="off" (click)="turnOffLeftLamp()">Apagar 💡</button>
-      </div>
-
-      <div class="light-card">
-        <h2>🔵 Lámpara Derecha</h2>
-        <p>Estado: <strong>{{ rightLampState?.state || 'Desconocido' }}</strong></p>
-        <button class="on" (click)="turnOnRightLamp()">Encender 🔷</button>
-        <button class="off" (click)="turnOffRightLamp()">Apagar 💡</button>
-      </div>
-
-      <div class="light-card">
-        <h2>📖 Luz de Lectura</h2>
-        <p>Estado: <strong>{{ readingLampState?.state || 'Desconocido' }}</strong></p>
-        <button class="on" (click)="turnOnReadingLamp()">Encender 📚</button>
-        <button class="off" (click)="turnOffReadingLamp()">Apagar 💡</button>
-      </div>
-
-      <div class="light-card party-mode">
+  <!-- 🔆 Controles -->
+  <div class="controls-wrapper">
+    <!-- 🔥 Modos Especiales a la Izquierda -->
+    <div class="special-modes-container">
+      <div class="light-card-left party-mode">
         <h2>🎉 Modo Fiesta</h2>
         <button class="party" (click)="startPartyMode()" *ngIf="!partyModeActive">Activar 🎊</button>
         <button class="stop-party" (click)="stopPartyMode()" *ngIf="partyModeActive">Desactivar 🛑</button>
       </div>
 
-      <div class="light-card alert-mode">
+      <div class="light-card-left alert-mode">
         <h2>🚨 Modo Alerta</h2>
         <button class="alert" (click)="startAlertMode()" *ngIf="!alertModeActive">Activar ⚠️</button>
         <button class="stop-alert" (click)="stopAlertMode()" *ngIf="alertModeActive">Desactivar 🛑</button>
       </div>
 
-      <div class="light-card warm-mode">
+      <div class="light-card-left warm-mode">
         <h2>🔥 Modo Cálido</h2>
         <button class="warm" (click)="startWarmMode()" *ngIf="!warmModeActive">Activar 🌅</button>
         <button class="stop-warm" (click)="stopWarmMode()" *ngIf="warmModeActive">Desactivar 🛑</button>
-      </div>      
+      </div>
+    </div>
 
+    <!-- 🔆 Controles de luces a la Derecha -->
+    <div class="lights-container">
+      <div class="light-card-right">
+        <div class="light-header">
+          <h2>🟡 Lámpara Izquierda | Estado: {{ leftLampState?.state || '?' }}</h2>
+        </div>
+        <button class="on" (click)="turnOnLeftLamp()">Encender 🔆</button>
+        <button class="off" (click)="turnOffLeftLamp()">Apagar 💡</button>
+      </div>
+      
+
+      <div class="light-card-right">
+        <h2>🔵 Lámpara Derecha | Estado: {{ rightLampState?.state || '?' }}</h2>
+        <button class="on" (click)="turnOnRightLamp()">Encender 🔷</button>
+        <button class="off" (click)="turnOffRightLamp()">Apagar 💡</button>
+      </div>
+
+      <div class="light-card-right">
+        <h2>📖 Luz de Lectura | Estado: {{ readingLampState?.state || 'Desconocido' }}</h2>
+        <button class="on" (click)="turnOnReadingLamp()">Encender 📚</button>
+        <button class="off" (click)="turnOffReadingLamp()">Apagar 💡</button>
+      </div>
     </div>
   </div>
 </div>
