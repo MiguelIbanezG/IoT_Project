@@ -19,6 +19,10 @@ export class HomeComponent implements OnInit {
   warmModeActive: boolean = false;
   cameraStreamUrl: string = "http://master:master@150.244.57.136/axis-cgi/mjpg/video.cgi?resolution=640x480";
   videoStreamUrl: string = 'http://localhost:5000/video_feed';  // URL del backend de video
+  showPhoto: boolean = true;
+  isListening = false;
+  recognition: any;
+
   
   constructor(private apiService: ApiService, private sanitizer: DomSanitizer) {}
 
@@ -174,4 +178,150 @@ export class HomeComponent implements OnInit {
     this.turnOffReadingLamp();
   }
 
+  closePhoto() {
+    this.showPhoto = false;
+  }
+
+  handleVoiceCommand(command: string): void {
+    command = command.toLowerCase().trim();
+  
+    // === Lámparas por temperatura ===
+    const temperaturaMap: { [key: string]: number } = {
+      'frío': 6500,
+      'normal': 4000,
+      'cálido': 1800,
+      'calido': 1800
+    };
+  
+    for (const [ambiente, temp] of Object.entries(temperaturaMap)) {
+      if (command.includes(`encender lectura ${ambiente}`)) {
+        this.apiService.setLampTemperature('light.lampara_de_lectura', temp).subscribe(() => {
+          console.log(`Lámpara de lectura encendida con temperatura ${ambiente} (${temp}K)`);
+        });
+        return;
+      }
+  
+      if (command.includes(`encender luz izquierda ${ambiente}`) || command.includes(`encender lámpara izquierda ${ambiente}`)) {
+        this.apiService.setLampTemperature('light.lampara_izquierda', temp).subscribe(() => {
+          console.log(`Lámpara izquierda encendida con temperatura ${ambiente} (${temp}K)`);
+        });
+        return;
+      }
+    }
+  
+    // === Luces individuales ON/OFF ===
+    // if (command.includes('encender luz izquierda') || command.includes('encender lámpara izquierda')) {
+    //   this.turnOnLeftLamp();
+    // } 
+    if (command.includes('apagar luz izquierda') || command.includes('apagar lámpara izquierda')) {
+      this.turnOffLeftLamp();
+    } 
+    // else if (command.includes('encender luz derecha')) {
+    //   this.turnOnRightLamp();
+    // } 
+    else if (command.includes('apagar luz derecha')) {
+      this.turnOffRightLamp();
+    } 
+    // else if (command.includes('encender lectura')) {
+    //   this.turnOnReadingLamp();
+    // } 
+    else if (command.includes('apagar lectura')) {
+      this.turnOffReadingLamp();
+  
+    // === Todas las luces ===
+    } else if (command.includes('encender luces')) {
+      this.turnOnLeftLamp();
+      this.turnOnRightLamp();
+      this.turnOnReadingLamp();
+    } else if (command.includes('apagar luces')) {
+      this.turnOffAllLamps();
+  
+    // === Modos ===
+    } else if (command.includes('modo fiesta')) {
+      this.startPartyMode();
+    } else if (command.includes('desactivar fiesta')) {
+      this.stopPartyMode();
+    } else if (command.includes('modo alerta')) {
+      this.startAlertMode();
+    } else if (command.includes('desactivar alerta')) {
+      this.stopAlertMode();
+    } else if (command.includes('modo calido') || command.includes('modo cálido')) {
+      this.startWarmMode();
+    } else if (command.includes('desactivar calido') || command.includes('desactivar cálido')) {
+      this.stopWarmMode();
+  
+    // === Color por voz en luz derecha (RGB) ===
+    } else if (command.includes('encender luz derecha')) {
+      const colorMap: { [key: string]: number[] } = {
+        'rojo': [255, 0, 0],
+        'verde': [0, 255, 0],
+        'azul': [0, 0, 255],
+        'amarillo': [255, 255, 0],
+        'naranja': [255, 165, 0],
+        'blanco': [255, 255, 255],
+        'morado': [128, 0, 128],
+        'rosa': [255, 105, 180]
+      };
+  
+      const color = Object.keys(colorMap).find(c => command.includes(c));
+      if (color) {
+        this.apiService.setLampColor('light.lampara_derecha', colorMap[color]).subscribe(() => {
+          console.log(`Luz derecha encendida en color ${color}`);
+        });
+      } else {
+        console.log('Color no reconocido para la luz derecha.');
+      }
+  
+    } else {
+      console.log('Comando no reconocido:', command);
+    }
+  }
+  
+  
+  
+  toggleVoiceRecognition(): void {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+  
+    if (!SpeechRecognition) {
+      console.error('API de reconocimiento de voz no soportada.');
+      return;
+    }
+  
+    if (!this.recognition) {
+      this.recognition = new SpeechRecognition();
+      this.recognition.lang = 'es-ES';
+      this.recognition.interimResults = false;
+      this.recognition.maxAlternatives = 1;
+  
+      this.recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript.toLowerCase().trim();
+        console.log('Comando detectado:', transcript);
+        this.handleVoiceCommand(transcript);
+      };
+  
+      this.recognition.onerror = (event: any) => {
+        console.error('Error en el reconocimiento de voz:', event.error);
+        this.isListening = false;
+      };
+  
+      this.recognition.onend = () => {
+        console.log('Reconocimiento de voz detenido.');
+        if (this.isListening) {
+          console.log('Reiniciando reconocimiento...');
+          this.recognition.start(); // 🔁 sigue escuchando si está activo
+        }
+      };
+    }
+  
+    if (!this.isListening) {
+      this.recognition.start();
+      this.isListening = true;
+      console.log('Escuchando...');
+    } else {
+      this.recognition.stop();
+      this.isListening = false;
+      console.log('Micrófono desactivado.');
+    }
+  }  
+  
 }

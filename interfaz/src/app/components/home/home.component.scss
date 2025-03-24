@@ -1,83 +1,79 @@
-// 🎨 Paleta de colores
+// ===== Colores base =====
 $primary-color: #0e95aa;
 $secondary-color: #0e95aa;
-
 $container-color: #8bc3cc;
 $card-color: #f8f9fa;
-
 $button-color: #28a745;
 $button-off-color: #dc3545;
-
 $party-mode-color: #6d039e;
 $party-stop-color: #340044;
-
 $alert-color: #ff0000;
 $alert-stop-color: #a70000;
-
 $warm-color: #ff9100;
 $warm-stop-color: #ff5e00c0;
-
 $boton-foto: #0e95aa;
-
 $shadow-color: rgba(0, 0, 0, 0.1);
 
-
-
-h2 {
-  color: $secondary-color;
-  margin-top: 10px;
-  border-bottom: 2px solid $secondary-color;
-  padding-bottom: 10px;
-}
-.camera-btn capture{
-
-}
-.content-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.controls-wrapper {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  width: 100%;
-  justify-content: space-between;
-}
-
-/* 📍 Modos Especiales (Izquierda) */
-.special-modes-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+// ===== Layout general =====
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
   background-color: $container-color;
 }
 
-/* 💡 Controles de Luces (Derecha) */
-.lights-container {
-  flex: 1;
+.page-layout {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  background-color: $container-color;
+  gap: 20px;
+  padding: 0px 40px;
+  align-items: center;
 }
 
-// 📷 Cámara
-.camera-container {
-  flex: 1;
+.page-header {
   text-align: center;
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 2px 2px 8px $shadow-color;
-  margin-top: 20px;
-  margin-left: 40px;
-  margin-right: 40px;
   margin-bottom: 0px;
+
+  h1 {
+    color: black;
+    font-size: 32px;
+    border-bottom: 2px solid black;
+    padding-bottom: 10px;
+  }
+}
+
+.camera-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+  background-color: white;
+  padding: 10px;
+  width: 90%;
+  border-radius: 12px;
+  box-shadow: 2px 2px 8px $shadow-color;
+  position: relative;
+  margin-top: -20px;
+}
+
+.video-live, .video-normal {
+  flex: 1;
+  min-width: 300px;
+  text-align: center;
+
+  h2 {
+    color: $primary-color;
+    font-size: 20px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  img {
+    width: 100%;
+    max-width: 40%; 
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+  }
 }
 
 .video-wrapper {
@@ -87,36 +83,15 @@ h2 {
   margin-bottom: 15px;
 }
 
-.camera-btn {
-  padding: 10px 20px;
-  font-size: 14px;
-  font-weight: bold;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 2px 2px 8px $shadow-color;
-  background-color: $boton-foto;
-  color: white;
-}
-
-.open {
-  background: $primary-color;
-  color: white;
-  &:hover {
-    background: darken($primary-color, 10%);
-  }
-}
-
-.capture {
-  background: $button-color;
-  color: white;
-  &:hover {
-    background: darken($button-color, 10%);
-  }
-}
-
 .stream-wrapper {
   margin-top: 15px;
+}
+
+.photo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
 .captured-photo {
@@ -126,34 +101,116 @@ h2 {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-
-.light-card-left {
-  background: #fff;
-  padding: 15px;
-  border-radius: 10px;
+// ===== Botón del micrófono flotante =====
+.microphone-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: $button-off-color;
+  border: none;
+  font-size: 28px;
+  padding: 12px;
+  border-radius: 50%;
   box-shadow: 2px 2px 8px $shadow-color;
-  text-align: center;
-  margin-left: 40px;
-  background-color: $card-color;
+  color: white;
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+
+  &.listening {
+    background-color: $button-color;
+  }
 }
 
-.light-card-right {
-  background: #fff;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 2px 2px 8px $shadow-color;
-  text-align: center;
-  margin-right: 40px;
-  background-color: $card-color;
+// ===== Sección de luces y modos =====
+.lights-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 30px;
+  width: 91%;
+  margin-bottom: 20px;
 }
 
+.lights-group {
+  flex: 1.2;
+  background-color: $card-color;
+  padding-top: 20px;
+  padding-left: 20px;
+  padding-bottom: 0px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 8px $shadow-color;
+  display: flex;
+  
+  h2 {
+    color: $secondary-color;
+    font-size: 22px;
+    margin-bottom: 10px;
+    white-space: nowrap;
+  }
+
+  .aa{
+    white-space: nowrap;
+  }
+  button {
+    display: inline-block;
+    width: auto;
+    min-width: 140px;
+    padding: 12px 80px;
+    margin: 5px 10px;
+    font-size: 16px;
+    white-space: nowrap;
+  }
+}
+
+.modes-group {
+  flex: 1;
+  background-color: $card-color;
+  padding-top: 20px;
+  padding-left: 30px;
+  padding-bottom: 0px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 8px $shadow-color;
+  display: flex;
+  
+  h2 {
+    color: $secondary-color;
+    font-size: 22px;
+    margin-bottom: 10px;
+    white-space: nowrap;
+  }
+
+  button {
+    display: inline-block;
+    width: auto;
+    min-width: 140px;
+    padding: 12px 110px;
+    margin: 5px 10px;
+    font-size: 16px;
+    white-space: nowrap;
+  }
+}
+
+.lights-image img {
+  max-width: 55%;
+  margin-top: 30px;
+  margin-left: 90px;
+  height: auto;
+}
+
+.lights-image2 img {
+  max-width: 55%;
+  margin-left: 110px;
+  margin-top: 30px;
+  height: auto;
+}
+
+// ===== Botones =====
 button {
-  padding: 10px 20px;
+  padding: 12px 55px;
   font-size: 14px;
   font-weight: bold;
-  margin: 5px;
-  border: none;
   border-radius: 5px;
+  border: none;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
   box-shadow: 2px 2px 8px $shadow-color;
@@ -209,7 +266,7 @@ button.alert {
 }
 
 button.stop-alert {
-  background:  $alert-stop-color;
+  background: $alert-stop-color;
   color: white;
 
   &:hover {
@@ -233,4 +290,30 @@ button.stop-warm {
   &:hover {
     background: darken($warm-stop-color, 10%);
   }
+}
+
+.camera-btn.close {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.camera-btn.open {
+  background: $primary-color;
+  color: white;
+  &:hover {
+    background: darken($primary-color, 10%);
+  }
+}
+
+.camera-btn {
+  padding: 12px 55px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 2px 2px 8px $shadow-color;
+  background-color: $boton-foto;
+  color: white;
+
 }

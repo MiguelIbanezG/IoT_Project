@@ -1,67 +1,89 @@
-<div class="content-wrapper">
-  <!-- 📷 Stream de la Cámara -->
-  <div class="camera-container">
-    <h2>📷 Vista en Vivo</h2>
-    <div>
-      <h2>Video nuevo</h2>
+<div class="page-layout">
+  <!-- 📄 Título principal -->
+  <header class="page-header">
+    <h1>Panel de Control de Habitación Inteligente</h1>
+  </header>
+
+  <!-- 📹 Sección de Cámaras y Micrófono -->
+  <section class="camera-section">
+    <div class="video-live">
+      <h2>Video en Vivo Procesado</h2>
       <img [src]="videoStreamUrl" alt="Video en vivo" />
-    </div>
-    <div class="video-wrapper">
-      <button class="camera-btn open" (click)="openCamera()">🔍 Abrir Cámara</button>
-      <button class="camera-btn" (click)="captureImage()">📸 Tomar Foto</button>
-    </div>
-    <div class="stream-wrapper">
-      <a *ngIf="photoUrl" [href]="photoUrl" target="_blank">
-        <img [src]="photoUrl" alt="Foto tomada" class="captured-photo">
-      </a>
-    </div>
-  </div>
 
-  <!-- 🔆 Controles -->
-  <div class="controls-wrapper">
-    <!-- 🔥 Modos Especiales a la Izquierda -->
-    <div class="special-modes-container">
-      <div class="light-card-left party-mode">
-        <h2>🎉 Modo Fiesta</h2>
-        <button class="party" (click)="startPartyMode()" *ngIf="!partyModeActive">Activar 🎊</button>
-        <button class="stop-party" (click)="stopPartyMode()" *ngIf="partyModeActive">Desactivar 🛑</button>
+      <div class="video-wrapper">
+        <button class="camera-btn open" (click)="openCamera()">🔍 Abrir Cámara</button>
+        <button class="camera-btn" (click)="captureImage()">📸 Tomar Foto</button>
       </div>
 
-      <div class="light-card-left alert-mode">
-        <h2>🚨 Modo Alerta</h2>
-        <button class="alert" (click)="startAlertMode()" *ngIf="!alertModeActive">Activar ⚠️</button>
-        <button class="stop-alert" (click)="stopAlertMode()" *ngIf="alertModeActive">Desactivar 🛑</button>
-      </div>
-
-      <div class="light-card-left warm-mode">
-        <h2>🔥 Modo Cálido</h2>
-        <button class="warm" (click)="startWarmMode()" *ngIf="!warmModeActive">Activar 🌅</button>
-        <button class="stop-warm" (click)="stopWarmMode()" *ngIf="warmModeActive">Desactivar 🛑</button>
-      </div>
-    </div>
-
-    <!-- 🔆 Controles de luces a la Derecha -->
-    <div class="lights-container">
-      <div class="light-card-right">
-        <div class="light-header">
-          <h2>🟡 Lámpara Izquierda | Estado: {{ leftLampState?.state || '?' }}</h2>
+      <div class="stream-wrapper" *ngIf="photoUrl && showPhoto">
+        <div class="photo-container">
+          <a [href]="photoUrl" target="_blank">
+            <img [src]="photoUrl" alt="Foto tomada" class="captured-photo" />
+          </a>
+          <button class="camera-btn close" (click)="closePhoto()">Cerrar Foto</button>
         </div>
-        <button class="on" (click)="turnOnLeftLamp()">Encender 🔆</button>
-        <button class="off" (click)="turnOffLeftLamp()">Apagar 💡</button>
-      </div>
-      
-
-      <div class="light-card-right">
-        <h2>🔵 Lámpara Derecha | Estado: {{ rightLampState?.state || '?' }}</h2>
-        <button class="on" (click)="turnOnRightLamp()">Encender 🔷</button>
-        <button class="off" (click)="turnOffRightLamp()">Apagar 💡</button>
-      </div>
-
-      <div class="light-card-right">
-        <h2>📖 Luz de Lectura | Estado: {{ readingLampState?.state || 'Desconocido' }}</h2>
-        <button class="on" (click)="turnOnReadingLamp()">Encender 📚</button>
-        <button class="off" (click)="turnOffReadingLamp()">Apagar 💡</button>
       </div>
     </div>
-  </div>
+
+    <button 
+      class="microphone-toggle" 
+      [ngClass]="{ 'listening': isListening }"
+      (click)="toggleVoiceRecognition()">
+      🎤
+    </button>
+  </section>
+
+  <!-- 🔦 Sección de Luces y Modos -->
+  <section class="lights-section">
+    <div class="modes-group">
+      <div>
+        <div>
+          <h2>🎉 Modo Fiesta</h2>
+          <button class="party" (click)="startPartyMode()" *ngIf="!partyModeActive">Activar 🎊</button>
+          <button class="stop-party" (click)="stopPartyMode()" *ngIf="partyModeActive">Desactivar 🚫</button>
+        </div>
+  
+        <div>
+          <h2>🚨 Modo Alerta</h2>
+          <button class="alert" (click)="startAlertMode()" *ngIf="!alertModeActive">Activar ⚠️</button>
+          <button class="stop-alert" (click)="stopAlertMode()" *ngIf="alertModeActive">Desactivar 🚫</button>
+        </div>
+  
+        <div >
+          <h2>🔥 Modo Cálido</h2>
+          <button class="warm" (click)="startWarmMode()" *ngIf="!warmModeActive">Activar 🌅</button>
+          <button class="stop-warm" (click)="stopWarmMode()" *ngIf="warmModeActive">Desactivar 🚫</button>
+        </div>
+      </div>
+      <div class="lights-image2">
+        <img src="assets/image2.png" alt="Icono de luces" />
+      </div>
+    </div>
+
+    <div class="lights-group">
+      <div>
+        <div class="aa">
+          <h2>💡 Lámpara Izquierda | Estado: {{ leftLampState?.state || '?' }}</h2>
+          <button class="on" (click)="turnOnLeftLamp()">Encender 🔆</button>
+          <button class="off" (click)="turnOffLeftLamp()">Apagar 💡</button>
+        </div>
+  
+        <div class="aa">
+          <h2>🔹 Lámpara Derecha | Estado: {{ rightLampState?.state || '?' }}</h2>
+          <button class="on" (click)="turnOnRightLamp()">Encender 🔹</button>
+          <button class="off" (click)="turnOffRightLamp()">Apagar 💡</button>
+        </div>
+  
+        <div class="aa">
+          <h2>📖 Luz de Lectura | Estado: {{ readingLampState?.state || 'Desconocido' }}</h2>
+          <button class="on" (click)="turnOnReadingLamp()">Encender 📚</button>
+          <button class="off" (click)="turnOffReadingLamp()">Apagar 💡</button>
+        </div>
+      </div>
+      <div class="lights-image">
+        <img src="assets/image.png" alt="Icono de luces" />
+      </div>
+    </div>
+
+  </section>
 </div>
