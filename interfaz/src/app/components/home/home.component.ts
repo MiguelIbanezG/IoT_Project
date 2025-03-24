@@ -18,8 +18,8 @@ export class HomeComponent implements OnInit {
   alertModeActive: boolean = false;
   warmModeActive: boolean = false;
   cameraStreamUrl: string = "http://master:master@150.244.57.136/axis-cgi/mjpg/video.cgi?resolution=640x480";
+  videoStreamUrl: string = 'http://localhost:5000/video_feed';  // URL del backend de video
   
-
   constructor(private apiService: ApiService, private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
@@ -39,13 +39,7 @@ export class HomeComponent implements OnInit {
       console.error("Error al capturar la imagen:", error);
     });
   }
-  
 
-  // loadCameraStream(): void {
-  //   this.cameraStreamUrl = "http://master:master@150.244.57.136/axis-cgi/mjpg/video.cgi?resolution=640x480";
-  // }
-
-  // ✅ Cargar estados de todas las lámparas
   loadAllLampStates(): void {
     this.apiService.getLeftLampState().subscribe(response => {
       this.leftLampState = response;
@@ -59,7 +53,7 @@ export class HomeComponent implements OnInit {
       this.readingLampState = response;
     });
   }
-  // ✅ Control de la lámpara izquierda
+
   turnOnLeftLamp(): void {
     this.apiService.turnOnLeftLamp().subscribe(response => {
       console.log('Lámpara izquierda encendida:', response);
@@ -74,7 +68,6 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  // ✅ Control de la lámpara derecha
   turnOnRightLamp(): void {
     this.apiService.turnOnRightLamp().subscribe(response => {
       console.log('Lámpara derecha encendida:', response);
@@ -89,7 +82,6 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  // ✅ Control de la luz de lectura
   turnOnReadingLamp(): void {
     this.apiService.turnOnReadingLamp().subscribe(response => {
       console.log('Lámpara de lectura encendida:', response);

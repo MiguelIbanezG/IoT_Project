@@ -2,6 +2,10 @@
   <!-- 📷 Stream de la Cámara -->
   <div class="camera-container">
     <h2>📷 Vista en Vivo</h2>
+    <div>
+      <h2>Video nuevo</h2>
+      <img [src]="videoStreamUrl" alt="Video en vivo" />
+    </div>
     <div class="video-wrapper">
       <button class="camera-btn open" (click)="openCamera()">🔍 Abrir Cámara</button>
       <button class="camera-btn" (click)="captureImage()">📸 Tomar Foto</button>
