@@ -36,6 +36,7 @@ export class HomeComponent implements OnInit {
   }
 
   captureImage(): void {
+    this.showPhoto = true;
     this.apiService.getImage().subscribe(blob => {
       const objectURL = URL.createObjectURL(blob);
       this.photoUrl = this.sanitizer.bypassSecurityTrustUrl(objectURL);

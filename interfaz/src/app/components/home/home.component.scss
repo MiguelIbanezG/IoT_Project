@@ -47,7 +47,7 @@ body {
   justify-content: space-between;
   gap: 20px;
   background-color: white;
-  padding: 10px;
+  padding: 0px;
   width: 90%;
   border-radius: 12px;
   box-shadow: 2px 2px 8px $shadow-color;
@@ -62,7 +62,7 @@ body {
 
   h2 {
     color: $primary-color;
-    font-size: 20px;
+    font-size: 22px;
     margin-bottom: 10px;
     text-align: center;
   }
@@ -96,7 +96,7 @@ body {
 
 .captured-photo {
   width: 100%;
-  max-width: 300px;
+  min-width: 600px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
@@ -136,7 +136,7 @@ body {
   background-color: $card-color;
   padding-top: 20px;
   padding-left: 20px;
-  padding-bottom: 0px;
+  padding-bottom: 20px;
   border-radius: 10px;
   box-shadow: 2px 2px 8px $shadow-color;
   display: flex;
@@ -167,7 +167,7 @@ body {
   background-color: $card-color;
   padding-top: 20px;
   padding-left: 30px;
-  padding-bottom: 0px;
+  padding-bottom: 20px;
   border-radius: 10px;
   box-shadow: 2px 2px 8px $shadow-color;
   display: flex;
@@ -295,6 +295,7 @@ button.stop-warm {
 .camera-btn.close {
   background-color: #e74c3c;
   color: white;
+  margin-bottom: 20px;
 }
 
 .camera-btn.open {
