@@ -116,17 +116,19 @@ def detect_objects(frame):
                 })
     return detected_objects
 
-def process_pose_and_objects(frame):
+def process_pose_and_objects(frame, object_detection=False):
     """Procesa la estimación de poses y detección de objetos."""
     start_time = time.time()
 
     # Detección de objetos
-    #detected_objects = detect_objects(frame)
-    #draw_detections(frame, detected_objects)
+    if object_detection:
+        detected_objects = detect_objects(frame)
+        draw_detections(frame, detected_objects)
 
     # Estimación de poses
     img = tf.image.resize_with_pad(tf.expand_dims(frame, axis=0), 192, 256)
     input_img = tf.cast(img, dtype=tf.int32)
+    #print(f"Shape frame: {input_img.shape}")
     results = movenet(input_img)
     keypoints_with_scores = results['output_0'].numpy()[:, :, :51].reshape((6, 17, 3))
     person_count = 0
@@ -142,12 +144,12 @@ def process_pose_and_objects(frame):
         draw_keypoints(frame, person, 0.33)
 
         # Posición de la etiqueta cerca de la cabeza
-        if head[2] > 0.33:
+        if head[2] > 0.25:
             cv2.putText(frame, pose_label, (int(head[1] * frame.shape[1]), int(head[0] * frame.shape[0]) - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
     end_time = time.time()
-    print(f"Tiempo de procesamiento: {end_time - start_time:.4f} segundos")
+    #print(f"Tiempo de procesamiento: {end_time - start_time:.4f} segundos")
     return frame
 
 def generate_video(camera_stream_url):
@@ -155,24 +157,32 @@ def generate_video(camera_stream_url):
     cap = cv2.VideoCapture(camera_stream_url)
 
     if not cap.isOpened():
-        print("Error al abrir la cámara.")
+        #print("Error al abrir la cámara.")
         return
     
+    frame_count = 0
     while True:
         ret, frame = cap.read()
         if not ret:
-            print("Error al leer el frame.")
-            break
+            #print("Error al leer el frame. Reiniciando cámara...")
+            cap.release()
+            cap = cv2.VideoCapture(camera_stream_url)
+            continue
 
-        frame = process_pose_and_objects(frame)
+        frame = process_pose_and_objects(frame, object_detection=frame_count % 500 == 0)
 
         _, buffer = cv2.imencode('.jpg', frame)
         frame_bytes = buffer.tobytes()
 
         yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+            b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+
+        frame_count += 1
+        if frame_count % 500 == 0:  # Cada 500 frames, reiniciar la cámara
+            cap.release()
+            cap = cv2.VideoCapture(camera_stream_url)
     
-    cap.release()
+    #cap.release()
 
 @app.route('/video_feed')
 def video_feed():

@@ -1,12 +1,26 @@
-# IoT_Project
-IoT_Project
+# 🚀 IoT_Project  
+**Innovación en Seguridad y Automatización**  
 
+## 💡 Idea  
+🌐 Crear una interfaz web para PC y móvil que pueda:  
 
-Idea: crear una interfaz web para pc y movil que tenga:
+	✅ Detectar el número de personas  
+	✅ Identificar objetos peligrosos  
+	✅ Reconocer actividades sospechosas  
+	✅ Controlar luces con modos especiales (fiesta, alerta, etc.)  
+	✅ Integrar sensores de movimiento, puertas abiertas, etc.  
 
-	1. Detectar el numero de personas
-	2. Detectar quien es cada persona
-	3. Detectar cosas 
-	3. Detectar activifades sospechosas
-	4. Lueces con modos: (modo fiesta, modo alerta, modo estudio)
-	5. 
+## 🛠️ Instrucciones de Ejecución  
+
+### 🔹 Local  
+#### ⚙️ Backend  
+```sh
+cd modelo
+gunicorn -w 1 -b 0.0.0.0:5000 --timeout 300 backend_server:app
+```
+#### 🎨 Frontend (Angular 9.1.13 y Node 16.20.2)
+```sh
+cd interfaz
+nvm use 16
+npx ng serve
+```
