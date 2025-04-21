@@ -22,13 +22,43 @@ export class HomeComponent implements OnInit {
   showPhoto: boolean = true;
   isListening = false;
   recognition: any;
+  statusDangerousObjects: number = 0;
+  statusPeopleDetected: number = 0;
+  statusSuspiciousPeople: number = 0;
+
 
   
   constructor(private apiService: ApiService, private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
     this.loadAllLampStates();
+    this.startStatusPolling();
+    
   }
+
+  startStatusPolling(): void {
+    this.apiService.getStatus().subscribe(status => {
+      this.statusDangerousObjects = status.dangerous_objects_detected;
+      this.statusPeopleDetected = status.people_detected;
+      this.statusSuspiciousPeople = status.suspicious_people_detected;
+    }, error => {
+      console.error('Error al obtener el estado:', error);
+    });
+  
+    setInterval(() => {
+      this.apiService.getStatus().subscribe(status => {
+        this.statusDangerousObjects = status.dangerous_objects_detected;
+        this.statusPeopleDetected = status.people_detected;
+        this.statusSuspiciousPeople = status.suspicious_people_detected;
+        console.log(this.statusDangerousObjects)
+        console.log(this.statusPeopleDetected)
+        console.log(this.statusSuspiciousPeople)
+      }, error => {
+        console.error('Error al obtener el estado:', error);
+      });
+    }, 10000); // 10 segundos
+  }
+  
 
   openCamera(): void {
     const cameraUrl = "http://master:master@150.244.57.136/axis-cgi/mjpg/video.cgi?resolution=640x480";

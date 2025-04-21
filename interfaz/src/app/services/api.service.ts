@@ -66,6 +66,11 @@ export class ApiService {
     return this.get('states/light.lampara_de_lectura');
   }
 
+  getStatus(): Observable<any> {
+    return this.http.get(`http://localhost:5000/status`, { headers: this.getHeaders() });
+  }
+  
+
   getImage(): Observable<Blob> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.token}`,

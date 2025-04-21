@@ -23,6 +23,15 @@
           <button class="camera-btn close" (click)="closePhoto()">Cerrar Foto</button>
         </div>
       </div>
+
+      <!-- 👁️ Estado de detección -->
+    <section class="status-section">
+      <h2>🛡️ Estado de Detección</h2>
+      <p>🔴 Objetos peligrosos detectados: {{ statusDangerousObjects }}</p>
+      <p>🧍‍♂️ Personas detectadas: {{ statusPeopleDetected }}</p>
+      <p>🕵️ Personas sospechosas detectadas: {{ statusSuspiciousPeople }}</p>
+    </section>
+
     </div>
 
     <button 
