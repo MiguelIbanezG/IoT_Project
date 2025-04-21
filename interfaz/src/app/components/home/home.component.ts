@@ -22,9 +22,9 @@ export class HomeComponent implements OnInit {
   showPhoto: boolean = true;
   isListening = false;
   recognition: any;
-  statusDangerousObjects: number = 0;
-  statusPeopleDetected: number = 0;
-  statusSuspiciousPeople: number = 0;
+  statusDangerousObjects: number = -33;
+  statusPeopleDetected: number = -33;
+  statusSuspiciousPeople: number = -33;
 
 
   
@@ -41,6 +41,9 @@ export class HomeComponent implements OnInit {
       this.statusDangerousObjects = status.dangerous_objects_detected;
       this.statusPeopleDetected = status.people_detected;
       this.statusSuspiciousPeople = status.suspicious_people_detected;
+      // console.log(this.statusDangerousObjects)
+      // console.log(this.statusPeopleDetected)
+      // console.log(this.statusSuspiciousPeople)
     }, error => {
       console.error('Error al obtener el estado:', error);
     });
@@ -56,7 +59,7 @@ export class HomeComponent implements OnInit {
       }, error => {
         console.error('Error al obtener el estado:', error);
       });
-    }, 10000); // 10 segundos
+    }, 1000); // cada 1 segundo (esto en principio no es costoso)
   }
   
 

@@ -5,7 +5,7 @@ import numpy as np
 import os
 import time
 from flask import Flask, Response, jsonify
-import threading
+from flask_cors import CORS
 
 CONFIDENCE_THRESHOLD = 0.25
 
@@ -19,6 +19,7 @@ status_data = {
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 app = Flask(__name__)
+CORS(app)
 
 # Cargar modelo de estimación de poses (MoveNet Multipose)
 pose_model = hub.load('https://tfhub.dev/google/movenet/multipose/lightning/1')
