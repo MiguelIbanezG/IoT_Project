@@ -4,7 +4,16 @@ import cv2
 import numpy as np
 import os
 import time
-from flask import Flask, Response
+from flask import Flask, Response, jsonify
+import threading
+
+CONFIDENCE_THRESHOLD = 0.25
+
+status_data = {
+    "people_detected": None,
+    "suspicious_people_detected": None,
+    "dangerous_objects_detected": None
+}
 
 # Deshabilitar GPU para compatibilidad
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
@@ -37,8 +46,7 @@ def draw_detections(frame, detections):
         cv2.rectangle(frame, (box[0], box[1]), (box[2], box[3]), (255, 0, 0), 2)
         cv2.putText(frame, label, (box[0], box[1] - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
 
-def draw_keypoints(frame, keypoints, confidence_threshold=0.1):
-    """Dibuja los puntos clave de la pose."""
+def draw_keypoints(frame, keypoints, confidence_threshold=CONFIDENCE_THRESHOLD):
     y, x, _ = frame.shape
     shaped = np.squeeze(np.multiply(keypoints, [y, x, 1]))
     for kp in shaped:
@@ -46,8 +54,7 @@ def draw_keypoints(frame, keypoints, confidence_threshold=0.1):
         if kp_conf > confidence_threshold:
             cv2.circle(frame, (int(kx), int(ky)), 6, (0, 255, 0), -1)
 
-def draw_connections(frame, keypoints, edges, confidence_threshold=0.1):
-    """Dibuja las líneas de conexión del esqueleto."""
+def draw_connections(frame, keypoints, edges, confidence_threshold=CONFIDENCE_THRESHOLD):
     y, x, _ = frame.shape
     shaped = np.squeeze(np.multiply(keypoints, [y, x, 1]))
     for edge, color in edges.items():
@@ -60,12 +67,13 @@ def draw_connections(frame, keypoints, edges, confidence_threshold=0.1):
 def detect_pose(keypoints):
     """Detecta comportamientos sospechosos basados en la pose."""
     left_shoulder, right_shoulder = keypoints[5], keypoints[6]
+    left_elbow, right_elbow = keypoints[7], keypoints[8]
     left_wrist, right_wrist = keypoints[9], keypoints[10]
     left_hip, right_hip = keypoints[11], keypoints[12]
     left_knee, right_knee = keypoints[13], keypoints[14]
 
     if left_wrist[2] > 0.2 and right_wrist[2] > 0.2:
-        if left_wrist[0] < left_shoulder[0] or right_wrist[0] < right_shoulder[0]:
+        if left_wrist[0] < left_shoulder[0] or right_wrist[0] < right_shoulder[0] or left_elbow[0] < left_shoulder[0] or right_elbow[0] < right_shoulder[0]:
             return "Sospechoso (1)"
 
     if left_knee[2] > 0.2 or right_knee[2] > 0.2:
@@ -94,7 +102,7 @@ def detect_objects(frame):
     # Filtrar objetos peligrosos
     detected_objects = []
     for i in range(len(scores)):
-        if scores[i] > 0.5:  # Solo objetos con alta probabilidad
+        if scores[i] > 0.33:  # Solo objetos con alta probabilidad
             class_id = classes[i]
             if class_id == 1:  # Clase 1: persona
                 label = "person"
@@ -117,40 +125,45 @@ def detect_objects(frame):
     return detected_objects
 
 def process_pose_and_objects(frame, object_detection=False):
-    """Procesa la estimación de poses y detección de objetos."""
     start_time = time.time()
 
-    # Detección de objetos
+    # Valores por defecto
+    dangerous_objects_count = None
+    suspicious_person_count = 0
+    person_count = None
+
     if object_detection:
         detected_objects = detect_objects(frame)
         draw_detections(frame, detected_objects)
+        dangerous_objects_count = sum(1 for obj in detected_objects if obj['name'] != "person")
+        person_count = sum(1 for obj in detected_objects if obj['name'] == "person")
+        print(f"Objetos peligrosos detectados: {dangerous_objects_count}")
+        print(f"Personas detectadas: {person_count}")
 
     # Estimación de poses
     img = tf.image.resize_with_pad(tf.expand_dims(frame, axis=0), 192, 256)
     input_img = tf.cast(img, dtype=tf.int32)
-    #print(f"Shape frame: {input_img.shape}")
     results = movenet(input_img)
     keypoints_with_scores = results['output_0'].numpy()[:, :, :51].reshape((6, 17, 3))
-    person_count = 0
 
     for person in keypoints_with_scores:
         head = person[0]
-        keypoint_count = sum(1 for keypoint in person if keypoint[2] > 0.33)
-        if keypoint_count <= 5 or head[2] <= 0.33:
+        keypoint_count = sum(1 for keypoint in person if keypoint[2] > CONFIDENCE_THRESHOLD)
+        if keypoint_count <= 5 or head[2] <= CONFIDENCE_THRESHOLD:
             continue
         
         pose_label = detect_pose(person)
-        draw_connections(frame, person, EDGES, 0.33)
-        draw_keypoints(frame, person, 0.33)
+        if "Sospechoso" in pose_label:
+            suspicious_person_count += 1
+        draw_connections(frame, person, EDGES, CONFIDENCE_THRESHOLD)
+        draw_keypoints(frame, person, CONFIDENCE_THRESHOLD)
 
-        # Posición de la etiqueta cerca de la cabeza
-        if head[2] > 0.25:
+        if head[2] > CONFIDENCE_THRESHOLD:
             cv2.putText(frame, pose_label, (int(head[1] * frame.shape[1]), int(head[0] * frame.shape[0]) - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
     end_time = time.time()
-    #print(f"Tiempo de procesamiento: {end_time - start_time:.4f} segundos")
-    return frame
+    return frame, dangerous_objects_count, suspicious_person_count, person_count
 
 def generate_video(camera_stream_url):
 
@@ -161,7 +174,10 @@ def generate_video(camera_stream_url):
         return
     
     frame_count = 0
+
     while True:
+
+        tic = time.time()
         ret, frame = cap.read()
         if not ret:
             #print("Error al leer el frame. Reiniciando cámara...")
@@ -169,7 +185,13 @@ def generate_video(camera_stream_url):
             cap = cv2.VideoCapture(camera_stream_url)
             continue
 
-        frame = process_pose_and_objects(frame, object_detection=frame_count % 500 == 0)
+        frame, dangerous_objects_count, suspicious_person_count ,person_count = process_pose_and_objects(frame, object_detection=(frame_count % 200 == 0))
+
+        
+        status_data["dangerous_objects_detected"] = dangerous_objects_count if dangerous_objects_count is not None else "no actualizada"
+        status_data["people_detected"] = person_count if person_count is not None else "no actualizada"
+        status_data["suspicious_people_detected"] = suspicious_person_count if suspicious_person_count is not None else "no actualizada"
+
 
         _, buffer = cv2.imencode('.jpg', frame)
         frame_bytes = buffer.tobytes()
@@ -177,12 +199,27 @@ def generate_video(camera_stream_url):
         yield (b'--frame\r\n'
             b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
 
+        toc = time.time()
+        print(f"FPS: {1 / (toc - tic):.2f}")
+        if frame_count % 200 == 0:
+            print(f"Frame: {frame_count} congelado")
+            print(f"Objetos peligrosos detectados: {dangerous_objects_count}")
+            print(f"Personas detectadas: {person_count}")
+            print(f"Personas sospechosas detectadas: {suspicious_person_count}")
+            time.sleep(5) # Freeze time
         frame_count += 1
-        if frame_count % 500 == 0:  # Cada 500 frames, reiniciar la cámara
+        
+        
+        if frame_count % 30 == 0:  # Cada 500 frames, reiniciar la cámara
             cap.release()
             cap = cv2.VideoCapture(camera_stream_url)
     
     #cap.release()
+
+@app.route('/status')
+def status():
+    return jsonify(status_data)
+
 
 @app.route('/video_feed')
 def video_feed():
