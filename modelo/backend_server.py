@@ -222,8 +222,6 @@ def generate_video(camera_stream_url):
 
         frame_count += 1
 
-        # Puedes ajustar la velocidad de envío aquí si va muy rápido
-        time.sleep(0.05)  # ~20 FPS
 
         if frame_count % 500 == 0:
             cap.release()
