@@ -167,55 +167,68 @@ def process_pose_and_objects(frame, object_detection=False):
     return frame, dangerous_objects_count, suspicious_person_count, person_count
 
 def generate_video(camera_stream_url):
-
     cap = cv2.VideoCapture(camera_stream_url)
 
     if not cap.isOpened():
-        #print("Error al abrir la cámara.")
         return
-    
+
     frame_count = 0
+    last_dangerous_objects_count = 0
+    last_suspicious_person_count = 0
+    last_person_count = 0
+
+    freeze_frame = None
+    freeze_until = 0  # timestamp hasta el que se congela
 
     while True:
+        now = time.time()
 
-        tic = time.time()
-        ret, frame = cap.read()
-        if not ret:
-            #print("Error al leer el frame. Reiniciando cámara...")
-            cap.release()
-            cap = cv2.VideoCapture(camera_stream_url)
-            continue
+        if freeze_frame is not None and now < freeze_until:
+            # Reenviar frame congelado
+            frame_to_send = freeze_frame
+        else:
+            # Leer nuevo frame
+            ret, frame = cap.read()
+            if not ret:
+                cap.release()
+                cap = cv2.VideoCapture(camera_stream_url)
+                continue
 
-        frame, dangerous_objects_count, suspicious_person_count ,person_count = process_pose_and_objects(frame, object_detection=(frame_count % 200 == 0))
+            frame, dangerous_objects_count, suspicious_person_count, person_count = process_pose_and_objects(frame, object_detection=(frame_count % 200 == 0))
 
-        
-        status_data["dangerous_objects_detected"] = dangerous_objects_count if dangerous_objects_count is not None else "no actualizada"
-        status_data["people_detected"] = person_count if person_count is not None else "no actualizada"
-        status_data["suspicious_people_detected"] = suspicious_person_count if suspicious_person_count is not None else "no actualizada"
+            # Actualizar status
+            status_data["dangerous_objects_detected"] = dangerous_objects_count if dangerous_objects_count is not None else last_dangerous_objects_count
+            status_data["people_detected"] = person_count if person_count is not None else last_person_count
+            status_data["suspicious_people_detected"] = suspicious_person_count if suspicious_person_count is not None else last_suspicious_person_count
+            last_dangerous_objects_count = status_data["dangerous_objects_detected"]
+            last_suspicious_person_count = status_data["suspicious_people_detected"]
+            last_person_count = status_data["people_detected"]
 
+            frame_to_send = frame
 
-        _, buffer = cv2.imencode('.jpg', frame)
+            if frame_count % 200 == 0:
+                print(f"[FRAME {frame_count}] Congelando frame por 5 segundos")
+                print(f"Objetos peligrosos: {dangerous_objects_count}")
+                print(f"Personas: {person_count}")
+                print(f"Sospechosas: {suspicious_person_count}")
+                freeze_frame = frame.copy()
+                freeze_until = now + 5  # Congela por 5 segundos
+
+        _, buffer = cv2.imencode('.jpg', frame_to_send)
         frame_bytes = buffer.tobytes()
 
         yield (b'--frame\r\n'
-            b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
 
-        toc = time.time()
-        print(f"FPS: {1 / (toc - tic):.2f}")
-        if frame_count % 200 == 0:
-            print(f"Frame: {frame_count} congelado")
-            print(f"Objetos peligrosos detectados: {dangerous_objects_count}")
-            print(f"Personas detectadas: {person_count}")
-            print(f"Personas sospechosas detectadas: {suspicious_person_count}")
-            time.sleep(5) # Freeze time
         frame_count += 1
-        
-        
-        if frame_count % 30 == 0:  # Cada 500 frames, reiniciar la cámara
+
+        # Puedes ajustar la velocidad de envío aquí si va muy rápido
+        time.sleep(0.05)  # ~20 FPS
+
+        if frame_count % 500 == 0:
             cap.release()
             cap = cv2.VideoCapture(camera_stream_url)
-    
-    #cap.release()
+
 
 @app.route('/status')
 def status():
