@@ -53,13 +53,24 @@ export class HomeComponent implements OnInit {
         this.statusDangerousObjects = status.dangerous_objects_detected;
         this.statusPeopleDetected = status.people_detected;
         this.statusSuspiciousPeople = status.suspicious_people_detected;
-        console.log(this.statusDangerousObjects)
-        console.log(this.statusPeopleDetected)
-        console.log(this.statusSuspiciousPeople)
+    
+        if ((this.statusDangerousObjects > 0 || this.statusSuspiciousPeople > 0) && !this.alertModeActive) {
+          this.stopPartyMode(); 
+          this.startAlertMode();
+        } else if (this.statusDangerousObjects === 0 && this.statusSuspiciousPeople === 0 && this.alertModeActive) {
+          this.stopAlertMode();
+        }
+    
+        if (this.statusPeopleDetected > 7 && !this.partyModeActive && !this.alertModeActive) {
+          this.startPartyMode();
+        } else if (this.statusPeopleDetected <= 7 && this.partyModeActive) {
+          this.stopPartyMode();
+        }
+    
       }, error => {
         console.error('Error al obtener el estado:', error);
       });
-    }, 1000); // cada 1 segundo (esto en principio no es costoso)
+    }, 1000);
   }
   
 
