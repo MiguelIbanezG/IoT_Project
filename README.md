@@ -1,5 +1,5 @@
 # 🚀 IoT_Project  
-**Innovación en Seguridad y Automatización**  
+**Seguridad y Automatización**  
 
 ## 💡 Idea  
 🌐 Crear una interfaz web para PC y móvil que pueda:  
@@ -8,7 +8,6 @@
 	✅ Identificar objetos peligrosos  
 	✅ Reconocer actividades sospechosas  
 	✅ Controlar luces con modos especiales (fiesta, alerta, etc.)  
-	✅ Integrar sensores de movimiento, puertas abiertas, etc.  
 
 ## 🛠️ Instrucciones de Ejecución  
 

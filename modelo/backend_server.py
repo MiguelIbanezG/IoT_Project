@@ -37,6 +37,7 @@ EDGES = {
     (12, 14): 'c', (14, 16): 'c'
 }
 
+# Definir objetos peligrosos
 dangerous_objects = ["knife", "scissors", "umbrella", "baseball bat", "baseball glove", "skateboard", "surfboard", "tennis racket"]
 
 def draw_detections(frame, detections):
@@ -48,6 +49,7 @@ def draw_detections(frame, detections):
         cv2.putText(frame, label, (box[0], box[1] - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
 
 def draw_keypoints(frame, keypoints, confidence_threshold=CONFIDENCE_THRESHOLD):
+    """Dibuja los puntos clave de la pose humana."""
     y, x, _ = frame.shape
     shaped = np.squeeze(np.multiply(keypoints, [y, x, 1]))
     for kp in shaped:
@@ -56,6 +58,7 @@ def draw_keypoints(frame, keypoints, confidence_threshold=CONFIDENCE_THRESHOLD):
             cv2.circle(frame, (int(kx), int(ky)), 6, (0, 255, 0), -1)
 
 def draw_connections(frame, keypoints, edges, confidence_threshold=CONFIDENCE_THRESHOLD):
+    """Dibuja las conexiones entre los puntos clave de la pose humana."""
     y, x, _ = frame.shape
     shaped = np.squeeze(np.multiply(keypoints, [y, x, 1]))
     for edge, color in edges.items():
@@ -126,6 +129,7 @@ def detect_objects(frame):
     return detected_objects
 
 def process_pose_and_objects(frame, object_detection=False):
+    """Procesa el frame para detectar poses y objetos peligrosos."""
     start_time = time.time()
 
     # Valores por defecto
@@ -167,6 +171,7 @@ def process_pose_and_objects(frame, object_detection=False):
     return frame, dangerous_objects_count, suspicious_person_count, person_count
 
 def generate_video(camera_stream_url):
+    """Genera el stream de video y procesa los frames."""
     cap = cv2.VideoCapture(camera_stream_url)
 
     if not cap.isOpened():
@@ -230,11 +235,13 @@ def generate_video(camera_stream_url):
 
 @app.route('/status')
 def status():
+    """Devuelve el estado actual del sistema."""
     return jsonify(status_data)
 
 
 @app.route('/video_feed')
 def video_feed():
+    """Devuelve el stream de video procesado."""
     # URL del stream de la cámara
     cameraStreamUrl = "http://master:master@150.244.57.136/axis-cgi/mjpg/video.cgi?resolution=640x480"
     return Response(generate_video(cameraStreamUrl), mimetype='multipart/x-mixed-replace; boundary=frame')
