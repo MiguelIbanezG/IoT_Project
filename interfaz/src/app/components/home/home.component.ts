@@ -55,16 +55,16 @@ export class HomeComponent implements OnInit {
         this.statusSuspiciousPeople = status.suspicious_people_detected;
     
         if ((this.statusDangerousObjects > 0 || this.statusSuspiciousPeople > 0) && !this.alertModeActive) {
-          this.stopPartyMode(); 
+          // this.stopPartyMode(); 
           this.startAlertMode();
         } else if (this.statusDangerousObjects === 0 && this.statusSuspiciousPeople === 0 && this.alertModeActive) {
-          this.stopAlertMode();
+          // this.stopAlertMode();
         }
     
         if (this.statusPeopleDetected > 7 && !this.partyModeActive && !this.alertModeActive) {
           this.startPartyMode();
         } else if (this.statusPeopleDetected <= 7 && this.partyModeActive) {
-          this.stopPartyMode();
+          // this.stopPartyMode();
         }
     
       }, error => {
